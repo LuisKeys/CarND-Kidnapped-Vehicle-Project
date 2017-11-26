@@ -48,7 +48,7 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
 }
 
 void ParticleFilter::prediction(double delta_t, double std_pos[], double velocity, double yaw_rate) {
-	cout << "Predicion Start.........." << endl;
+	//cout << "Predicion Start.........." << endl;
 
 	double std_x = std_pos[0];
 	double std_y = std_pos[1];
@@ -112,7 +112,7 @@ void ParticleFilter::dataAssociation(std::vector<LandmarkObs> predicted, std::ve
 
 void ParticleFilter::updateWeights(double sensor_range, double std_landmark[], 
 		const std::vector<LandmarkObs> &observations, const Map &map_landmarks) {
-	cout << "UpdateWeights Start.........." << endl;
+	//cout << "UpdateWeights Start.........." << endl;
 	double x_m, y_m, x_p, y_p, 
 			theta_p, cos_theta, sin_theta,
 			x_o, y_o, distance,
@@ -223,7 +223,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 }
 
 void ParticleFilter::resample() {
-	cout << "Resample Start.........." << endl;
+	//cout << "Resample Start.........." << endl;
 	double beta = 0.0;
 	vector<Particle> resamp_particles;
 	//Store weights in list
@@ -255,8 +255,8 @@ void ParticleFilter::resample() {
 		resamp_particles.push_back(particles[ri]);
 	}
 
-	cout << "Resampled particles size.........." << endl;
-	cout << resamp_particles.size() << endl;
+	//cout << "Resampled particles size.........." << endl;
+	//cout << resamp_particles.size() << endl;
 
 	particles = resamp_particles;
 }
