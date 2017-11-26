@@ -48,6 +48,8 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
 }
 
 void ParticleFilter::prediction(double delta_t, double std_pos[], double velocity, double yaw_rate) {
+	cout << "Predicion Start.........." << endl;
+
 	double std_x = std_pos[0];
 	double std_y = std_pos[1];
 	double std_theta = std_pos[2];
@@ -110,6 +112,7 @@ void ParticleFilter::dataAssociation(std::vector<LandmarkObs> predicted, std::ve
 
 void ParticleFilter::updateWeights(double sensor_range, double std_landmark[], 
 		const std::vector<LandmarkObs> &observations, const Map &map_landmarks) {
+	cout << "UpdateWeights Start.........." << endl;
 	double x_m, y_m, x_p, y_p, 
 			theta_p, cos_theta, sin_theta,
 			x_o, y_o, distance,
@@ -142,7 +145,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 	    particles[pi].sense_y.clear();
 	    transformed_observations.clear();
 	    map_landmarks_within_range.clear();
-	    particle.weight = 1.0;
+	    particles[pi].weight = 1.0;
 
 		//Transformations of observations to Map coords
 		for(int oi = 0; oi < observations.size(); ++oi) {
@@ -153,7 +156,6 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 			x_m = x_p + cos_theta * x_o - sin_theta * y_o;
 			y_m = y_p + sin_theta * x_o + cos_theta * y_o;
 
-			particles[pi].associations.push_back(observations[oi].id);
 			particles[pi].sense_x.push_back(x_m);
 			particles[pi].sense_y.push_back(y_m);
 		}
@@ -194,6 +196,8 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 			//Id of nearest map landmark calculated with dataAssociation(...) function
 			id_o = transformed_observation.id;
 
+			particles[pi].associations.push_back(id_o);
+
 			int map_landmarks_aoi = -1;
 			if(id_o >= 0) {
 				for (int aoi = 0; aoi < map_landmarks.landmark_list.size(); aoi++)
@@ -219,13 +223,14 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 }
 
 void ParticleFilter::resample() {
+	cout << "Resample Start.........." << endl;
 	double beta = 0.0;
 	vector<Particle> resamp_particles;
 	//Store weights in list
 
 	vector<double> weights;
-	for (int i = 0; i < num_particles; i++) {
-		weights.push_back(particles[i].weight);
+	for (int pi = 0; pi < num_particles; pi++) {
+		weights.push_back(particles[pi].weight);
 	}
 
 	//Random index
@@ -238,10 +243,10 @@ void ParticleFilter::resample() {
 	//Uniform dist
 	uniform_real_distribution<double> beta_dist(0.0, max_weight);
 
-
-	// spin the resample wheel!
+	//Resample
 	for (int pi = 0; pi < num_particles; pi++) {
 		beta += beta_dist(gen) * 2.0;
+
 		while (beta > weights[ri]) {
 		  beta -= weights[ri];
 		  ri = (ri + 1) % num_particles;
@@ -249,6 +254,9 @@ void ParticleFilter::resample() {
 
 		resamp_particles.push_back(particles[ri]);
 	}
+
+	cout << "Resampled particles size.........." << endl;
+	cout << resamp_particles.size() << endl;
 
 	particles = resamp_particles;
 }
