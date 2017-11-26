@@ -177,7 +177,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 				LandmarkObs landmark;
 				landmark.x = map_landmark.x_f;
 				landmark.y = map_landmark.y_f;
-				landmark.id = mi;
+				landmark.id = map_landmark.id_i;
 				map_landmarks_within_range.push_back(landmark);
 			}
 		}		
@@ -211,12 +211,6 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 				multi_term_1 = delta_x * delta_x  / (2 * sigma_x * sigma_x);
 				multi_term_2 = delta_y * delta_y  / (2 * sigma_y * sigma_y);
 				obs_weight = alpha * exp(-( multi_term_1 + multi_term_2 ));
-
-				cout << ".........." << endl;
-				cout << pi << endl;
-				cout << multi_term_1 << endl;
-				cout << multi_term_2 << endl;
-				getchar();
 
 				particles[pi].weight *= obs_weight;
 			}
